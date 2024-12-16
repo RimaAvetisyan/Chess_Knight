@@ -10,7 +10,7 @@ const ChessBoard: React.FC = () => {
   const [horsePosition, setHorsePosition] = useState<Position>({ row: 6, col: 6 });
   const [possibleMoves, setPossibleMoves] = useState<Position[]>([]);
   const [moveCount, setMoveCount] = useState<number>(0);
-  const [moveHistory, setMoveHistory] = useState<string[]>([]); // Store history of moves
+  const [moveHistory, setMoveHistory] = useState<string[]>(["G2"]); // Store history of moves
   const squareSize = 60; // Size of each square on the chessboard
   const [timer, setTimer] = useState<number>(0); // Timer state
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false); // To control the timer
@@ -80,16 +80,25 @@ const ChessBoard: React.FC = () => {
   };
 
   const undoMove = () => {
-    if (moveHistory.length > 0) {
-      const lastMove = moveHistory[moveHistory.length - 1];
-      const [col, row] = lastMove.split('');
-      const prevRow = 8 - parseInt(row);
-      const prevCol = col.charCodeAt(0) - 65;
+    if (moveHistory.length > 1) { // Ensure at least one move exists to undo
+      const lastMove = moveHistory[moveHistory.length - 2]; // Get the previous move
+      console.log("Undoing move:", lastMove);
+  
+      // Parse column and row from chess notation (e.g., 'G2')
+      const prevCol = lastMove.charCodeAt(0) - 65; // 'G' -> 6
+      const prevRow = 8 - parseInt(lastMove[1]);   // '2' -> 6
+  
+      // Update state to reflect the undo
       setHorsePosition({ row: prevRow, col: prevCol });
-      setMoveHistory((prevHistory) => prevHistory.slice(0, prevHistory.length - 1));
-      setMoveCount((prevCount) => prevCount - 1);
+      setMoveHistory((prevHistory) => prevHistory.slice(0, -1)); // Remove last move
+      setMoveCount((prevCount) => Math.max(0, prevCount - 1));   // Prevent negative count
+      setPossibleMoves([]); // Clear possible moves
+    } else {
+      console.log("No moves to undo");
     }
   };
+  
+  
 
   return (
     <View style={styles.board}>
