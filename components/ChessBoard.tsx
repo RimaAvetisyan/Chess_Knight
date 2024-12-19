@@ -338,12 +338,15 @@ const ChessBoard: React.FC = () => {
   const isSquareBlack = (row: number, col: number): boolean => {
     return (row + col) % 2 === 1;
   };
-
+  
   const handleSetHorsePosition = () => {
+    // Convert input to uppercase to handle both lowercase and uppercase letters
+    const upperInput = inputPosition.toUpperCase();
+  
     // Convert input (e.g., "C6") to row and col
-    const col = inputPosition.charCodeAt(0) - 65; // 'A' -> 0, 'B' -> 1, etc.
-    const row = 8 - parseInt(inputPosition[1]); // '8' -> 0, '7' -> 1, etc.
-
+    const col = upperInput.charCodeAt(0) - 65; // 'A' -> 0, 'B' -> 1, etc.
+    const row = 8 - parseInt(upperInput[1]); // '8' -> 0, '7' -> 1, etc.
+  
     if (col >= 0 && col < 8 && row >= 0 && row < 8) {
       setHorsePosition({ row, col }); // Set the horse's position
       setPossibleMoves([]); // Clear possible moves
